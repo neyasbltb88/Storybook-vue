@@ -1,29 +1,37 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
-  </div>
+<div class="container">
+    <ZoomSlideshow class="zoom-slideshow"></ZoomSlideshow>
+</div>
+    
 </template>
 
-<style lang="scss">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+import ZoomSlideshow from './components/ZoomSlideshow.vue';
+
+export default {
+    components: {
+        ZoomSlideshow
     }
-  }
 }
+</script>
+
+<style lang="sass">
+body
+    margin: 0
+    width: 100vw
+    height: 100vh
+    box-sizing: border-box
+    display: flex
+    align-items: center
+    justify-content: center
+    background-color: #333
+
+.container
+    width: 90vw
+    height: 90vh
+
+.zoom-slideshow
+    width: 100%
+    height: 100%
+
 </style>
