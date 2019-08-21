@@ -57,7 +57,8 @@ export default {
             // Значение текущего слайда до первоначальной инициализации: -1,
             // при первом вызове nextSlide оно будет 0 и возьмет первую картинку
             currentSlide: -1,
-            slidesDataUrl: [],
+            // slidesDataUrl: [],
+            slidesDataUrl: new Map(),
             waitLoadingImg: false,
             currentLoadedUrl: "",
             // Заглушка - один прозрачный пиксель
@@ -68,8 +69,8 @@ export default {
     computed: {
         // Заглушка, чтобы при старте в src не попадал undefined
         currentSlideUrl() {
-            return this.slidesDataUrl[this.currentSlide]
-                ? this.slidesDataUrl[this.currentSlide]
+            return this.slidesDataUrl.has(this.slides[this.currentSlide])
+                ? this.slidesDataUrl.get(this.slides[this.currentSlide])
                 : this.emptyImg;
         },
         // Получение циклического номера следующего слайда
@@ -95,13 +96,11 @@ export default {
     methods: {
         // Загрузка одной картинки и сохранение ее в виде dataUrl
         async loadDataUrl(url) {
-            console.log("loadDataUrl: ", url);
-
             this.currentLoadedUrl = url;
             let rawData = await fetch(url);
             let blob = await rawData.blob();
             let dataUrl = URL.createObjectURL(blob);
-            this.slidesDataUrl.push(dataUrl);
+            this.slidesDataUrl.set(url, dataUrl);
             this.currentLoadedUrl = "";
 
             // Если слайдшоу уже ждет эту картинку
@@ -111,16 +110,19 @@ export default {
         },
 
         // Рекурсивная загрузка картинок
-        async loadDataUrlLoop() {
-            if (this.slidesDataUrl.length < this.slides.length) {
-                let url = this.slides[this.slidesDataUrl.length];
-
-                // Если нужная картинка уже загружается, выходим
-                if (this.currentLoadedUrl === url) return;
-
-                await this.loadDataUrl(url);
-                await this.loadDataUrlLoop();
+        async loadDataUrlLoop(url) {
+            // Если не передан конкретный url, и не все картинки еще загружены
+            if (!url && this.slidesDataUrl.size < this.slides.length) {
+                // будем грузить следующую по списку
+                url = this.slides[this.slidesDataUrl.size];
             }
+
+            // Если нужная картинка в процессе загрузки, или уже загружена, выходим
+            if (url && (this.currentLoadedUrl === url || this.slidesDataUrl.has(url))) return;
+            if(!url) return;
+
+            await this.loadDataUrl(url);
+            await this.loadDataUrlLoop();
         },
 
         // Вызывает смену лайдов
@@ -136,7 +138,8 @@ export default {
         // Запуск рекурсивной смены слайдов с защитой от показа недозагруженных картинок
         async startSlideshow() {
             // Если картинка для следующего слайда уже загружена
-            if (this.slidesDataUrl[this.nextSlide]) {
+            let nextSlideUrl = this.slides[this.nextSlide];            
+            if (this.slidesDataUrl.has(nextSlideUrl)) {
                 this.waitLoadingImg = false;
                 this.showNextSlide();
 
@@ -144,7 +147,7 @@ export default {
                 // и загрузчик по готовности картинки снова вызовет startSlideshow
             } else {
                 this.waitLoadingImg = true;
-                this.loadDataUrlLoop();
+                this.loadDataUrlLoop(nextSlideUrl);
                 return;
             }
 
@@ -201,6 +204,7 @@ export default {
     &-enter
         opacity: var(--fromOpacity)
         transform: var(--fromTransform)
+        &-active
     &-leave
         opacity: 1
         &-active
