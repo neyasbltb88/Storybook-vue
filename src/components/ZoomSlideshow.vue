@@ -166,9 +166,11 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+
 .zoom-slideshow-container
     position: relative
     box-sizing: border-box
+
 
 .slides, .slide, .slides-overlay, .content-container
     position: absolute
