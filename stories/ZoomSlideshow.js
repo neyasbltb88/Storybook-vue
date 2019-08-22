@@ -20,6 +20,7 @@ storiesOf('Zoom Slideshow', module)
                 :to="1"
                 :duration="5000"
                 :zoomDuration="8000"
+                :fadeInDuration="3000"
             ></ZoomSlideshow>
         </div>`)
 

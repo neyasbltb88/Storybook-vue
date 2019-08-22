@@ -47,6 +47,9 @@ export default {
             type: Number,
             default: 5000
         },
+        fadeInDuration: {
+            type: [Number, undefined],
+        },
         overlayClass: {
             type: String,
             default: "slides-overlay-effect"
@@ -57,7 +60,6 @@ export default {
             // Значение текущего слайда до первоначальной инициализации: -1,
             // при первом вызове nextSlide оно будет 0 и возьмет первую картинку
             currentSlide: -1,
-            // slidesDataUrl: [],
             slidesDataUrl: new Map(),
             waitLoadingImg: false,
             currentLoadedUrl: "",
@@ -67,6 +69,20 @@ export default {
         };
     },
     computed: {
+        _fadeInDuration() {
+            console.log('fadeInDuration - this._fadeInDuration:', this.fadeInDuration);
+            
+            let ms;
+            if(this.fadeInDuration) {
+                ms = this.fadeInDuration;
+            } else {
+                ms = this.zoomDuration > 700 ? 700 : this.zoomDuration;
+            }
+
+            console.log('fadeInDuration - ms:', ms);
+
+            return ms;
+        },
         // Заглушка, чтобы при старте в src не попадал undefined
         currentSlideUrl() {
             return this.slidesDataUrl.has(this.slides[this.currentSlide])
@@ -84,9 +100,7 @@ export default {
             return {
                 "--toOpacity": 1,
                 "--toTransform": `scale(${this.to})`,
-                "--transition": `opacity ${
-                    this.zoomDuration > 700 ? 700 : this.zoomDuration
-                }ms ease, transform ${this.zoomDuration}ms ease`,
+                "--transition": `opacity ${this._fadeInDuration}ms ease, transform ${this.zoomDuration}ms ease`,
 
                 "--fromOpacity": 0,
                 "--fromTransform": `scale(${this.from})`
