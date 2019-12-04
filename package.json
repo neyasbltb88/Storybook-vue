@@ -1,12 +1,12 @@
 {
     "name": "storybook-vue",
     "version": "0.1.0",
-    "private": true,
     "scripts": {
         "serve": "vue-cli-service serve",
         "start": "start-storybook -s ./public",
         "build": "build-storybook -s ./public -o ./dist_storybook"
     },
+    "main": "/src/main.js",
     "dependencies": {
         "core-js": "^2.6.5",
         "vue": "^2.6.10",
