@@ -4,8 +4,6 @@
     "private": true,
     "scripts": {
         "serve": "vue-cli-service serve",
-        "build": "vue-cli-service build",
-        "lint": "vue-cli-service lint",
         "storybook": "start-storybook -s ./public",
         "build:storybook": "build-storybook -s ./public -o ./dist_storybook"
     },
