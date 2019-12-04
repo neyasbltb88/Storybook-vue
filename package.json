@@ -1,11 +1,11 @@
 {
-    "name": "helmet-storybook",
+    "name": "storybook-vue",
     "version": "0.1.0",
     "private": true,
     "scripts": {
         "serve": "vue-cli-service serve",
-        "storybook": "start-storybook -s ./public",
-        "build:storybook": "build-storybook -s ./public -o ./dist_storybook"
+        "start": "start-storybook -s ./public",
+        "build": "build-storybook -s ./public -o ./dist_storybook"
     },
     "dependencies": {
         "core-js": "^2.6.5",
