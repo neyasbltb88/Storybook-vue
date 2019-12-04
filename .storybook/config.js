@@ -1,17 +1,12 @@
-import {
-    configure
-} from '@storybook/vue';
+import { configure } from '@storybook/vue';
 
 import Vue from 'vue';
 
-import ZoomSlideshow from "../src/components/ZoomSlideshow.vue";
+import ZoomSlideshow from '../src/components/ZoomSlideshow.vue';
 Vue.component('ZoomSlideshow', ZoomSlideshow);
 
-
-// function loadStories() {
-//     require('../stories/ZoomSlideshow.js');
-//     // You can require as many stories as you need.
-// }
+import LikeCounterController from '../src/components/LikeCounterController.vue';
+Vue.component('LikeCounterController', LikeCounterController);
 
 const req = require.context('../stories', true, /\.js$/);
 
@@ -21,8 +16,6 @@ function loadStories() {
 
         return req(filename);
     });
-
 }
-
 
 configure(loadStories, module);
