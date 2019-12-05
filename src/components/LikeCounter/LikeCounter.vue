@@ -5,18 +5,40 @@
 
         <div class="like-counter-icon" v-if="!noIcon"></div>
 
-        <transition-group tag="div" name="fade" class="like-counter-count" @after-enter="afterEnterHandler">
-            <div
-                v-for="(digit, index) in maxLength"
-                :key="keyGenerator(index)"
-                :data-key="keys[index]"
-                class="like-counter-count-digit"
-                :style="`--delay: ${getPosition(index)};`"
-            >
-                <div class="like-counter-count-digit-new">{{ newCount[index] || ' ' }}</div>
-                <div class="like-counter-count-digit-old">{{ oldCount[index] || ' ' }}</div>
+        <div class="like-counter-count">
+            <div class="like-counter-count-new">
+                <transition
+                    v-for="(digit, index) in maxLength"
+                    :key="keyGenerator(index)"
+                    name="fade"
+                    mode="out-in"
+                    @after-enter="afterEnterHandler"
+                    @before-enter="beforeEnterHandler"
+                >
+                    <div
+                        :key="keyGenerator(index)"
+                        :data-key="keys[index]"
+                        class="like-counter-count-digit"
+                        :style="`--delay: ${getPosition(index)};`"
+                    >
+                        {{ newCount[index] || '&nbsp;' }}
+                    </div>
+                </transition>
             </div>
-        </transition-group>
+            <div class="like-counter-count-old">
+                <transition v-for="(digit, index) in maxLength" :key="keyGenerator(index)" name="fade" mode="out-in">
+                    <div
+                        :key="keyGenerator(index)"
+                        :data-key="keys[index]"
+                        class="like-counter-count-digit"
+                        :style="`--delay: ${getPosition(index)};`"
+                    >
+                        <!-- {{ oldCount[index] || '&nbsp;' }} -->
+                        {{ newCount[index] || '&nbsp;' }}
+                    </div>
+                </transition>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -86,6 +108,8 @@ export default {
                 }
             }
 
+            // this.oldCount = this.newCount;
+
             return result;
         },
         _count() {
@@ -145,21 +169,21 @@ export default {
         },
         afterEnterHandler() {
             console.log('afterEnterHandler');
+            // this.oldCount = this.newCount;
 
             this.stoppedDigit++;
-            let needAmount = this.maxLength - this.startPosition;
+            let needAmount = this.newCount.length - this.startPosition;
             console.log(`stoppedDigit: ${this.stoppedDigit}| needAmount: ${needAmount}`);
 
             if (this.stoppedDigit >= needAmount) {
                 this.stoppedDigit = 0;
-                this.oldCount = this.newCount;
+                // this.oldCount = this.newCount;
                 console.log('Animation stop');
             }
         },
-        // afterLeaveHandler() {
-        //     console.log('afterLeaveHandler');
-        //     this.stoppedDigit++;
-        // },
+        beforeEnterHandler() {
+            this.oldCount = this.newCount;
+        },
         getPosition(index) {
             return Math.abs(index - this.maxLength) - 1;
         },
@@ -189,18 +213,25 @@ export default {
         opacity: 0.7
     &-count
         display: flex
+        flex-direction: column
         font-weight: bold
         font-family: sans-serif
         margin-bottom: -3px
         user-select: none
         color: var(--inactive-color)
-        // border: 1px solid #00f
         height: 18px
         overflow: hidden
-        &-digit
+        // border: 1px solid #00f
+        &-new
             display: flex
-            flex-direction: column
+            transform: translateY(-100%)
+        &-old
+            display: flex
+            transform: translateY(-100%)
+            // opacity: 0
+        &-digit
             // transform: translateY(0%)
+            // transition: transform 5s calc(1000ms * var(--delay))
 
 .like-counter.active
     .like-counter
@@ -212,26 +243,26 @@ export default {
             color: var(--active-color)
 
 
-.fade-enter
-    transform: translateY(-100%)
+.like-counter-count-new
+    .fade-enter
+        transform: translateY(100%)
 
-.fade-enter-active
-    transition: transform 0.2s calc(100ms * var(--delay))
-    // transition: transform 10s calc(1000ms * var(--delay)) linear
-    // transform: translateY(0%)
+    .fade-enter-active
+        transition: transform 0.25s calc(100ms * var(--delay))
+        transform: translateY(0%)
 
-.fade-enter-to
-    // transform: translateY(0%)
+    .fade-enter-to
+        transform: translateY(100%)
 
-// .fade-leave
-//     transform: translateY(100%)
-
-// .fade-leave-active
-//     transform: translateY(100%)
-//     transition: transform 0s 0ms
-
-// .fade-leave-to
-//     transform: translateY(100%)
+// --------
+.like-counter-count-old
+    .fade-leave
+        transform: translateY(100%)
+    .fade-leave-active
+        transition: transform 0.25s calc(100ms * var(--delay))
+        transform: translateY(0%)
+    .fade-leave-to
+        transform: translateY(100%)
 
 @keyframes like
     0%

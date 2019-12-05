@@ -39,7 +39,7 @@ export default {
             setInterval(() => {
                 // this.active = !this.active;
                 this.clickHandler();
-            }, 3000);
+            }, 2000);
         }
     },
     // created() {
