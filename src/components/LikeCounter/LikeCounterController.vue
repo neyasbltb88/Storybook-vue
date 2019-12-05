@@ -22,15 +22,34 @@ export default {
             if (this.active) {
                 this.count += this.rand(1, 1000);
             } else {
-                this.count -= this.rand(1, 1000);
+                let newCount = this.count - this.rand(1, 1000);
+                this.count = newCount >= 0 ? newCount : 0;
             }
+
+            // if (this.active) {
+            //     this.count += 1;
+            // } else {
+            //     this.count -= 1;
+            // }
         },
         rand(min, max) {
             return Math.floor(min + Math.random() * (max + 1 - min));
+        },
+        tick() {
+            setInterval(() => {
+                // this.active = !this.active;
+                this.clickHandler();
+            }, 3000);
         }
     },
+    // created() {
+    //     this.count = 9999;
+
+    //     // this.tick();
+    // }
     created() {
         this.count = this.rand(1000, 10000);
+        // this.tick();
     }
 };
 </script>

@@ -5,7 +5,7 @@ import Vue from 'vue';
 import ZoomSlideshow from '../src/components/ZoomSlideshow.vue';
 Vue.component('ZoomSlideshow', ZoomSlideshow);
 
-import LikeCounterController from '../src/components/LikeCounterController.vue';
+import LikeCounterController from '../src/components/LikeCounter/LikeCounterController.vue';
 Vue.component('LikeCounterController', LikeCounterController);
 
 const req = require.context('../stories', true, /\.js$/);
